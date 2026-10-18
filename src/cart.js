@@ -46,12 +46,23 @@ function removeFromCart(cart, productId) {
   return cart.filter((item) => item.id !== productId);
 }
 
-function calculateCartSubtotal() {
-  throw new Error('Корзина ещё не реализована. Сначала прочитайте тесты.');
+function calculateCartSubtotal(cart) {
+  return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 }
 
-function calculateOrderTotal() {
-  throw new Error('Корзина ещё не реализована. Сначала прочитайте тесты.');
+function calculateOrderTotal(cart, promoCode) {
+  const subtotal = calculateCartSubtotal(cart);
+  const discount = promoCode === 'SAVE10' && subtotal >= 20000
+    ? Math.round(subtotal * 0.1)
+    : 0;
+  const delivery = subtotal >= 50000 ? 0 : 30000;
+
+  return {
+    subtotal,
+    discount,
+    delivery,
+    total: subtotal - discount + delivery,
+  };
 }
 
 const cartApi = { addToCart, changeQuantity, removeFromCart, calculateCartSubtotal, calculateOrderTotal };
